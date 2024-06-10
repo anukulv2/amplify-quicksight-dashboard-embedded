@@ -1,7 +1,7 @@
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Amplify, { Auth } from 'aws-amplify';
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import {Amplify,  Auth } from 'aws-amplify';
+import { withAuthenticator} from '@aws-amplify/ui-react';
 import awsconfig from './aws-exports';
 import Embed from './Embed';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,7 +20,6 @@ function App() {
   
   return (
     <div>
-      <AmplifySignOut />
       <Container maxWidth="md">
         <Typography variant="h4" component="h1" align="center" color="textPrimary" className={classes.title} gutterBottom>
           Amazon QuickSight Embed
