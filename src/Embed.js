@@ -1,5 +1,6 @@
 import React from 'react';
-import { API, Auth } from 'aws-amplify';
+import {fetchAuthSession} from 'aws-amplify/auth';
+import { get } from 'aws-amplify/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -28,22 +29,34 @@ class Embed extends React.Component {
     }
     
     getQuickSightDashboardEmbedURL = async () => {
-        const data = await Auth.currentSession();
-        const jwtToken = data.idToken.jwtToken;
-        const payloadSub = data.idToken.payload.sub;
-        const email = data.idToken.payload.email;
+        const data = await fetchAuthSession();
+        const jwtToken = data.tokens.idToken;
+        const payloadSub = data.tokens.idToken.payload.sub;
+        const email = data.tokens.idToken.payload.email;
         
         const params = { 
             headers: {},
             response: true,
             queryStringParameters: {
-                jwtToken: jwtToken,
+                jwtToken: jwtToken.toString(),
                 payloadSub: payloadSub,
                 email: email
             }
         }
-        const quicksight = await API.get('quicksight', '/getQuickSightDashboardEmbedURL', params);
-        console.log(quicksight);
+        //const quicksight = await get('quicksight', '/getQuickSightDashboardEmbedURL', params);
+        const quicksight = await get({
+            apiName: 'quicksight',
+            path: '/getQuickSightDashboardEmbedURL',
+            options: {
+                queryParams: {
+                    jwtToken: jwtToken,
+                    payloadSub: payloadSub,
+                    email: email
+                }
+            }
+        });
+        console.log(params.queryStringParameters);
+        //console.log(quicksight);
         const containerDiv = document.getElementById("dashboardContainer");
         
         const options = {
